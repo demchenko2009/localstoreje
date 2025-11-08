@@ -33,14 +33,14 @@ function addConntakt(name,surname,phone,mail) {
 }
 
 function render(arrey) {
-    list.innerHTML = arrey.map(({name,surn,phone,email},index) => {
+    list.innerHTML = arrey.map(({name,surname,phone,mail},index) => {
         return `<li data-idx="${index}" class="item">
-    <p> имя${name}</p>
-    <p> призвыще${surn}</p>
-    <p телл>${phone}</p>
-    <p имеил>${email}</p>
-    <button class="btn-dell" type="button">dellet</button>
-    <button class="btn-edit" type="button">redaguvati</button>
+    <p> имя: ${name}</p>
+    <p> призвыще: ${surname}</p>
+    <p телл: >${phone}</p>
+    <p имеил: >${mail}</p>
+    <button class="btn-dell" type="button">delete</button>
+    <button class="btn-edit" type="button">Change</button>
 </li>`
     }).join("")
 }
@@ -60,13 +60,46 @@ list.addEventListener("click",(event) => {
     }
 })
 
+let removeid = null;
+
+list.addEventListener("click", (event) => {
+  if (event.target.classList.contains("btn-edit")) {
+    const li = event.target.closest("li");
+    const idx = li.dataset.idx;
+    const contact = contacts[idx];
+
+    inputName.value = contact.name;
+    inputSurf.value = contact.surname;
+    inputPhobe.value = contact.phone;
+    inputMail.value = contact.mail;
+
+    removeid = idx;
+    btn.textContent = "зберегти";
+  }
+});
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const name = inputName.value.trim();
+  const surn = inputSurf.value.trim();
+  const phone = inputPhobe.value.trim();
+  const email = inputMail.value.trim();
+
+  if (removeid !== null) {
+    contacts[removeid] = { name, surname: surn, phone, mail: email };
+    removeid = null;
+    savedStoraje();
+    event.currentTarget.reset();
+    return;
+  }
+});
+
+
 function removeItem(idx) {
     contacts.splice(idx,1)
     savedStoraje()
 }
 
 render(contacts)
-
-
-
 
